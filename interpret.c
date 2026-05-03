@@ -1,4 +1,6 @@
 #include "vm.h"
+#include <stdbool.h>
+#include <inttypes.h>
 
 void lift_unop(struct stack* s, int64_t (f)(int64_t)) {
     int64_t a = stack_pop(s).value;
@@ -8,6 +10,10 @@ void lift_binop(struct stack* s, int64_t (f)(int64_t, int64_t)) {
     int64_t a = stack_pop(s).value;
     int64_t b = stack_pop(s).value;
     stack_push(s, f(b, a));
+}
+
+bool is_valid_jump(struct vm_state* state, int64_t jump){
+    return state->ip + jump <= state->end && state->ip + jump >= state->begin;
 }
 
 // Математика
@@ -51,6 +57,19 @@ void interpret_icmp(struct vm_state* state) {
     else stack_push(&state->data_stack, VM_FALSE);
 }
 
+void interpret_jmp(struct vm_state* state) {
+    int64_t jump = state->ip->as_arg64.arg;
+    if(is_valid_jump(state, jump)) state->ip += jump;
+    else state->ip++;
+}
+
+void interpret_jmz(struct vm_state* state) {
+    int64_t jump = state->ip->as_arg64.arg;
+    int64_t z = stack_pop(&state->data_stack).value;
+    if(is_valid_jump(state, jump) && z == VM_FALSE) state->ip += jump;
+    else state->ip++;
+}
+
 void interpret_stop(struct vm_state* state) { state->ip = NULL; }
 
 // Таблица переходов
@@ -66,6 +85,8 @@ ins_interpreter * const actions[] = {
     [BC_ICMP] = interpret_icmp,
     [BC_IPRINT] = interpret_iprint,
     [BC_IREAD] = interpret_iread,
+    [BC_JMP] = interpret_jmp,
+    [BC_JMZ] = interpret_jmz,
     [BC_STOP] = interpret_stop  
 };
 
@@ -77,6 +98,8 @@ void interpret(struct vm_state* state) {
 
         if (state->data_stack.count < desc->stack_min) {
             fprintf(stderr, "Stack underflow\n");
+            printf(" %" PRId64 " \n", state->data_stack.count);
+            printf("%s \n", desc->mnemonic);
             return;
         }
 

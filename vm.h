@@ -9,8 +9,8 @@
 enum opcode { 
     BC_PUSH, BC_POP, BC_SWAP, BC_DUP,
     BC_IADD, BC_ISUB, BC_IMUL, BC_IDIV, 
-    BC_INEG, BC_IPRINT, BC_IREAD, BC_ICMP, 
-    BC_STOP 
+    BC_INEG, BC_IPRINT, BC_IREAD, BC_ICMP,
+    BC_JMP, BC_JMZ, BC_STOP 
 };
 
 enum ins_arg_type { ARG_NONE, ARG_INT64 };
@@ -26,6 +26,8 @@ union ins {
 
 struct vm_state {
     const union ins* ip;
+    const union ins* begin;
+    const union ins* end;
     struct stack data_stack;
 };
 

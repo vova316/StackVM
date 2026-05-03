@@ -17,8 +17,6 @@ int64_t i64_mul(int64_t a, int64_t b) {return a * b; }
 int64_t i64_div(int64_t a, int64_t b) {return a / b; }
 int64_t i64_neg(int64_t a) { return -a; }
 
-// ... (остальные функции i64_sub, mul и т.д. по аналогии)
-
 // Обработчики
 void interpret_push(struct vm_state* state) { stack_push(&state->data_stack, state->ip->as_arg64.arg); }
 void interpret_iadd(struct vm_state* state) { lift_binop(&state->data_stack, i64_add); }
@@ -71,7 +69,6 @@ ins_interpreter * const actions[] = {
     [BC_STOP] = interpret_stop  
 };
 
-// extern const struct ins_descr instructions[];
 
 void interpret(struct vm_state* state) {
     while (state->ip) {

@@ -49,5 +49,5 @@ const union ins program[] = {
 ```bash
 make clean
 make
-./MyFirstMakeProject
+./vm_app
 ```

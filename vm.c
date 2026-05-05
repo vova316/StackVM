@@ -20,11 +20,11 @@ const struct ins_descr instructions[] = {
 };
 
 
-struct vm_state state_create(const union ins* ip) {
+struct vm_state state_create(const union ins* ip, size_t size) {
     return (struct vm_state){
         .ip = ip, 
         .begin = ip, 
-        .end = ip + STACK_CAPACITY,
+        .end = ip + size - 1,
         .data_stack = stack_create(STACK_CAPACITY)};
 }
 

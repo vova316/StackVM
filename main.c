@@ -37,7 +37,8 @@ const union ins program[] = {
 };
 
 int main() {
-    struct vm_state state = state_create(program);
+    size_t size = sizeof(program) / sizeof(program[0]);
+    struct vm_state state = state_create(program, size);
     interpret(&state);
     state_destroy(&state);
     return 0;

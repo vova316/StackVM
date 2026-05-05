@@ -41,7 +41,7 @@ struct ins_descr {
 
 typedef void ins_interpreter(struct vm_state*);
 
-struct vm_state state_create(const union ins* ip);
+struct vm_state state_create(const union ins* ip, size_t size);
 void state_destroy(struct vm_state* state);
 
 extern const struct ins_descr instructions[];
